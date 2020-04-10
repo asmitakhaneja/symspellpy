@@ -297,6 +297,43 @@ class SymSpell(object):
                         self.create_dictionary_entry(key, count)
         return True
 
+    def load_dictionary_dict(self, dictionary):
+    #     """Load multiple dictionary entries from a file of
+    #     word/frequency count pairs.
+
+    #     **NOTE**: Merges with any dictionary data already loaded.
+
+    #     Parameters
+    #     ----------
+    #     corpus : str
+    #         The path+filename of the file.
+    #     term_index : int
+    #         The column position of the word.
+    #     count_index : int
+    #         The column position of the frequency count.
+    #     separator : str, optional
+    #         Separator characters between term(s) and count.
+    #     encoding : str, optional
+    #         Text encoding of the dictionary file
+
+    #     Returns
+    #     -------
+    #     bool
+    #         True if file loaded, or False if file not found.
+    #     """
+    #     if not os.path.exists(corpus):
+    #         return False
+    #     with open(corpus, "r", encoding=encoding) as infile:
+    #         for line in infile:
+    #             line_parts = line.rstrip().split(separator)
+    #             if len(line_parts) >= 2:
+    #                 key = line_parts[term_index]
+    #                 count = helpers.try_parse_int64(line_parts[count_index])
+        for key,count in dictionary.items():
+            if count is not None:
+                self.create_dictionary_entry(key, count)
+        return True
+
     def create_dictionary(self, corpus, encoding=None):
         """Load multiple dictionary words from a file containing plain
         text.
@@ -463,10 +500,7 @@ class SymSpell(object):
         suggestion_count = 0
         if phrase in self._words:
             suggestion_count = self._words[phrase]
-            if transfer_casing:
-                suggestions.append(SuggestItem(original_phrase, 0, suggestion_count))
-            else:
-                suggestions.append(SuggestItem(phrase, 0, suggestion_count))
+            suggestions.append(SuggestItem(phrase, 0, suggestion_count))
             # early exit - return exact match, unless caller wants all
             # matches
             if verbosity != Verbosity.ALL:
